@@ -40,14 +40,17 @@ During the development of VocalisLLM, several technical hurdles were encountered
 
 ### 1. Cost & Usage Limits (Server-side vs. Client-side)
 **Challenge:** Using server-side models for STT and TTS alongside the LLM prompt would require 3 API requests per user interaction. This significantly increases costs and consumes monthly usage quotas quickly.
+
 **Solution:** I implemented **client-side transcription** using the free **Web Speech API** by Google. This offloads the processing to the browser, making the voice interaction entirely free and scalable.
 
 ### 2. TTS Character Limits
 **Challenge:** The Web Speech API has a fixed character limit for single utterances, causing long AI responses to be cut off mid-sentence.
+
 **Solution:** I developed a **text chunking algorithm** that divides the AI's response into smaller arrays. These chunks are loaded sequentially into utterance objects, ensuring the entire response is spoken fluently without hitting the cap.
 
 ### 3. STT 60-Second Audio Limit
 **Challenge:** Most browser STT implementations have a 60-second limit and do not support pre-recorded or long-form continuous audio naturally.
+
 **Solution:** I implemented a dynamic session management system:
 - **Interim Results:** Real-time transcription is captured in an interim result string.
 - **Session Cycling:** At the 55-second mark, the interim text is committed to the final result string, the current session is transparently restarted, and the recognition engine is reloaded.
